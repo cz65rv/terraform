@@ -1,4 +1,3 @@
-
 # ELB resource block
 resource "aws_elb" "infra-elb" {
   name            = "infra-elb"
