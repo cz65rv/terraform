@@ -18,6 +18,9 @@ resource "aws_eip" "test_eip" {
 resource "aws_key_pair" "default-key" {
   key_name   = "default"
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDZ8zkOP3q+fm91pXM45h3De8qNKC+8JFUdjFImSRhmMreyniHzZQu/k6eU5BYEKokJUHcFKX9amWROsvQZb/zx02jfF5Jr9Z896s4ANX2YoI02jKw7uvlx8oE/q8GDAv7C7JAAjA1fV4TB8ZDiypoRrImc8YxtjtLZUIBXvfRklN0hOY3ycGLVG2D8gGOvCj/uvd4QBD4qr/+TEDxms1zgLNxQShQzHSNmKPsRnMoXaIjs9v7xWN+JymggmNX3SiYUrCxi3ClbnM/Bm8YKo+P73zY3bfCoFripKSNw2uKCBiaKpYjiLav7jfRVs5RsExge5NCvfmiO1sRhSCW5NLut5x/snzX/M9yJ3MglBGOA+CKD3MzEQYQpNw0i938cEKyp5TBU87sseu3ECYNEATs3PUAGJQHJJaskAZ+V033dlVCbo6MFVrBAhBo0LvJnZ0UDBW3Pou9Vo0TYgKs9XWH6u9xsec87v+6VTnF6Q3nozbQoeFWvokoqm0SQXbBZU38= mukesh@master"
+  tags = {
+    Name = "default"
+  }
 }
 
 ######### EC2 instance block for server
