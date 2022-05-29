@@ -5,7 +5,7 @@ resource "aws_autoscaling_policy" "scaling-policy-up" {
   scaling_adjustment     = 1
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 300
-  autoscaling_group_name = aws_autoscaling_group.rackspace-asg.name
+  autoscaling_group_name = aws_autoscaling_group.asg.name
 }
 
 
@@ -17,12 +17,12 @@ resource "aws_cloudwatch_metric_alarm" "cpu-usage-up" {
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"
   namespace           = "AWS/EC2"
-  period              = "120"
+  period              = var.alarm-period
   statistic           = "Average"
-  threshold           = "70"
+  threshold           = var.max-threshold
   
   dimensions = {
-    AutoScalingGroupName = aws_autoscaling_group.rackspace-asg.name
+    AutoScalingGroupName = aws_autoscaling_group.asg.name
   }
 
   alarm_description = "This metric monitor EC2 instance CPU utilization"
@@ -37,7 +37,7 @@ resource "aws_autoscaling_policy" "scaling-policy-down" {
   scaling_adjustment     = -1
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 300
-  autoscaling_group_name = aws_autoscaling_group.rackspace-asg.name
+  autoscaling_group_name = aws_autoscaling_group.asg.name
 }
 
 
@@ -49,12 +49,12 @@ resource "aws_cloudwatch_metric_alarm" "cpu-usage-down" {
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"
   namespace           = "AWS/EC2"
-  period              = "120"
+  period              = var.alarm-period
   statistic           = "Average"
-  threshold           = "30"
+  threshold           = var.min-threshold
 
   dimensions = {
-    AutoScalingGroupName = aws_autoscaling_group.rackspace-asg.name
+    AutoScalingGroupName = aws_autoscaling_group.asg.name
   }
 
   alarm_description = "This metric monitor EC2 instance CPU utilization"

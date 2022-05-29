@@ -6,6 +6,4 @@ provider "aws" {
   region = var.aws_region
 }
 
-provider "http" {}
-
 data "aws_availability_zones" "az" {}

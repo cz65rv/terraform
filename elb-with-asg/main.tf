@@ -1,8 +1,8 @@
-################## Load balancer resource block
+################## Load balancer resource block #######################
 
 resource "aws_elb" "rackspace-elb" {
   name                      = "rackspace-elb"
-  subnets                   = aws_subnet.elb-pub-subnet.*.id
+  subnets                   = aws_subnet.pub-subnet.*.id
   security_groups           = [aws_security_group.elb-sg.id]
   cross_zone_load_balancing = true
   
@@ -22,15 +22,14 @@ resource "aws_elb" "rackspace-elb" {
   }
 }
 
-
-################ Launch configuration for ASG
+################ Launch configuration for ASG ####################
 
 resource "aws_launch_configuration" "rackspace-host-lc" {
-  name_prefix                 = "rackspace_host-"
+  name_prefix                 = "${var.asg-name}-"
   image_id                    = data.aws_ami.latest-ubuntu1.id
-  instance_type               = "t2.micro"
-  key_name                    = "demo-key"
-  security_groups             = [aws_security_group.asg-sg.id]
+  instance_type               = var.machine-type
+  key_name                    = var.ssh-key
+  security_groups             = [aws_security_group.pvt-sg.id]
   user_data                   = "${file("webserver.sh")}"
   associate_public_ip_address = false
     
@@ -39,23 +38,17 @@ resource "aws_launch_configuration" "rackspace-host-lc" {
   }
 }
 
+############### Auto scaing group resource block ######################
 
-############### Auto scaing group resource block
-
-resource "aws_autoscaling_group" "rackspace-asg" {
+resource "aws_autoscaling_group" "asg" {
   name                 = "${aws_launch_configuration.rackspace-host-lc.name}-asg"
-  min_size             = 2
-  desired_capacity     = 3
-  max_size             = 5
+  min_size             = var.min-size
+  desired_capacity     = var.desire-size
+  max_size             = var.max-size
   health_check_type    = "ELB"
   load_balancers       = [aws_elb.rackspace-elb.id]
   launch_configuration = aws_launch_configuration.rackspace-host-lc.name
-  
-  vpc_zone_identifier  = [
-    aws_subnet.asg-pvt-subnet1.id,
-    aws_subnet.asg-pvt-subnet2.id,
-    aws_subnet.asg-pvt-subnet3.id
-    ]
+  vpc_zone_identifier  = aws_subnet.pvt-subnet.*.id
   
   metrics_granularity  = "1Minute"
   
@@ -73,12 +66,12 @@ resource "aws_autoscaling_group" "rackspace-asg" {
 
   tag {
     key                 = "Name"
-    value               = "rackspace-asg"
+    value               = "${var.asg-name}-demo"
     propagate_at_launch = true
     }
 }
 
-############### AMI Data Source to pull latest Ubuntu AMI
+############### AMI Data Source to pull latest Ubuntu AMI ##################
 data "aws_ami" "latest-ubuntu1" {
   most_recent = true
   owners      = ["099720109477"] # Canonical
