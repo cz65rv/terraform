@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "Default aws region"
   type        = string
-  default     = "us-west-2"
+  default     = "ap-south-1"
 }
 
 variable "vpc_name" {
@@ -13,7 +13,7 @@ variable "vpc_name" {
 variable "asg-name" {
   description = "Default ASG name"
   type        = string
-  default     = "demo"
+  default     = "rackspace"
 }
 
 variable "min-threshold" {
